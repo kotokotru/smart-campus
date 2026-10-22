@@ -153,6 +153,27 @@ SANITY_BASE_URL=https://campus.example/sports/ dotnet test --filter "Category=Sa
 **CHANGELOG.md** — запись `[1.9.0] - 2026-10-28` по Keep a Changelog: Added, Changed, Deprecated,
 Fixed, Breaking Changes (+ анонс breaking changes 1.10.0 в `[Unreleased]`).
 
+---
+
+## Скриншоты
+
+| | |
+|---|---|
+| Рис. 1. Папка `homework-5` в репозитории | ![](report/img/01_repo.png) |
+| Рис. 2. Теги OpenTelemetry в контроллере | ![](report/img/02_controller.png) |
+| Рис. 3. Коммиты с префиксом `[CAMPUS-110]` | ![](report/img/03_commits.png) |
+| Рис. 4. Карточка CR-2026-110 | ![](report/img/04_cr.png) |
+| Рис. 5. План отката (`kubectl rollout undo`) | ![](report/img/05_rollback.png) |
+| Рис. 6. Обязательные проверки CI пройдены | ![](report/img/06_actions.png) |
+| Рис. 7. Фаза Expand (`01_expand.sql`) | ![](report/img/12_expand.png) |
+| Рис. 8. Dual-write в C# | ![](report/img/13_dualwrite.png) |
+| Рис. 9. Выполнение `02_migrate.sql` в CI | ![](report/img/07_migrate_log.png) |
+| Рис. 10. Cleanup в sanity-тесте | ![](report/img/11_sanity_cleanup.png) |
+| Рис. 11. `dotnet test` на рабочем ПК — 12/12 | ![](report/img/14_tests_local.png) |
+| Рис. 12. Тесты в GitHub Actions — 12/12 | ![](report/img/08_tests_ci.png) |
+| Рис. 13. ADR-0009: альтернативы | ![](report/img/09_adr.png) |
+| Рис. 14. CHANGELOG: запись 1.9.0 | ![](report/img/10_changelog.png) |
+
 ## Структура
 
 ```
@@ -165,5 +186,5 @@ homework-5/
 ├── docs/change-requests/CR-2026-110-v1.9.0.md
 ├── docs/branch-protection.md (+ .json)
 ├── k8s/deployment.yaml
-└── report/  (PDF-отчёт)
+└── report/  (PDF-отчёт, img/ — скриншоты)
 ```
