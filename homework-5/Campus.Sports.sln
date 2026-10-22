@@ -1,0 +1,33 @@
+
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.31903.59
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{AE3E9710-7257-47BC-BA94-4043D675C1E5}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFA8}") = "Campus.Sports.Api", "src\Campus.Sports.Api\Campus.Sports.Api.csproj", "{DD60CEDA-0622-49B0-847A-A5731FC03278}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{DEE87F41-84C7-48D8-903D-FD94A111442E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFA8}") = "Campus.Sports.Tests", "tests\Campus.Sports.Tests\Campus.Sports.Tests.csproj", "{3A8D6C5C-C8AA-4806-855A-A79CFBC0C886}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{DD60CEDA-0622-49B0-847A-A5731FC03278}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DD60CEDA-0622-49B0-847A-A5731FC03278}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DD60CEDA-0622-49B0-847A-A5731FC03278}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DD60CEDA-0622-49B0-847A-A5731FC03278}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3A8D6C5C-C8AA-4806-855A-A79CFBC0C886}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3A8D6C5C-C8AA-4806-855A-A79CFBC0C886}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3A8D6C5C-C8AA-4806-855A-A79CFBC0C886}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3A8D6C5C-C8AA-4806-855A-A79CFBC0C886}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{DD60CEDA-0622-49B0-847A-A5731FC03278} = {AE3E9710-7257-47BC-BA94-4043D675C1E5}
+		{3A8D6C5C-C8AA-4806-855A-A79CFBC0C886} = {DEE87F41-84C7-48D8-903D-FD94A111442E}
+	EndGlobalSection
+EndGlobal

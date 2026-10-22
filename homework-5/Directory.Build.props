@@ -1,0 +1,10 @@
+<Project>
+  <!--
+    Целевая платформа решения. По умолчанию .NET 8 (LTS, используется в CI и production).
+    Локальный прогон на машине, где установлен только .NET 10:
+      dotnet test -p:CampusTargetFramework=net10.0 -p:AspNetTestingVersion=10.0.0
+  -->
+  <PropertyGroup>
+    <CampusTargetFramework Condition="'$(CampusTargetFramework)' == ''">net8.0</CampusTargetFramework>
+  </PropertyGroup>
+</Project>
