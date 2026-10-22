@@ -1,0 +1,94 @@
+name: homework-5 CI (campus-sports-api)
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+permissions:
+  contents: read
+
+defaults:
+  run:
+    working-directory: homework-5
+
+jobs:
+  commit-lint:
+    name: commit-lint
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Commit messages reference a Jira issue ([CAMPUS-NNN])
+        shell: bash
+        env:
+          PR_TITLE: ${{ github.event.pull_request.title }}
+          BASE_SHA: ${{ github.event.pull_request.base.sha || github.event.before }}
+        run: |
+          pattern='^\[CAMPUS-[0-9]+\] .+'
+          if [ -n "$PR_TITLE" ] && ! [[ "$PR_TITLE" =~ $pattern ]]; then
+            echo "::error::PR title must match $pattern"; exit 1
+          fi
+          if [ -z "$BASE_SHA" ] || [ "$BASE_SHA" = "0000000000000000000000000000000000000000" ]; then
+            range="HEAD"            # первый push в репозиторий — проверяем всю историю
+          else
+            range="$BASE_SHA..HEAD"
+          fi
+          bad=0
+          while IFS= read -r subject; do
+            if [[ "$subject" =~ $pattern ]]; then echo "OK   $subject"; else echo "::error::Bad commit message: $subject"; bad=1; fi
+          done < <(git log --no-merges --format=%s $range)
+          exit $bad
+
+  build-and-test:
+    name: build-and-test
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 8.0.x
+      - run: dotnet restore Campus.Sports.sln
+      - run: dotnet build Campus.Sports.sln --no-restore -c Release
+      - name: Unit + tracing + sanity (in-process) tests
+        run: dotnet test Campus.Sports.sln --no-build -c Release --logger "console;verbosity=normal"
+
+  db-migrations:
+    name: db-migrations
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: campus
+        ports: ["5432:5432"]
+        options: >-
+          --health-cmd "pg_isready -U postgres"
+          --health-interval 5s --health-timeout 5s --health-retries 10
+    env:
+      PGHOST: localhost
+      PGUSER: postgres
+      PGPASSWORD: postgres
+      PGDATABASE: campus
+    steps:
+      - uses: actions/checkout@v4
+      - name: 00 baseline (v1.8 schema + demo data)
+        run: psql -v ON_ERROR_STOP=1 -f db/migrations/00_baseline_v1.8.sql
+      - name: 01 expand
+        run: psql -v ON_ERROR_STOP=1 -f db/migrations/01_expand.sql
+      - name: 02 migrate
+        run: psql -v ON_ERROR_STOP=1 -f db/migrations/02_migrate.sql
+      - name: 02 migrate is idempotent
+        run: psql -v ON_ERROR_STOP=1 -f db/migrations/02_migrate.sql
+      - name: 03 contract
+        run: psql -v ON_ERROR_STOP=1 -f db/migrations/03_contract.sql
+      - name: Rollback of phase 1 works (fresh database)
+        run: |
+          psql -c "CREATE DATABASE campus_rb"
+          PGDATABASE=campus_rb psql -v ON_ERROR_STOP=1 -f db/migrations/00_baseline_v1.8.sql
+          PGDATABASE=campus_rb psql -v ON_ERROR_STOP=1 -f db/migrations/01_expand.sql
+          PGDATABASE=campus_rb psql -v ON_ERROR_STOP=1 -f db/migrations/01_expand_rollback.sql
+          PGDATABASE=campus_rb psql -v ON_ERROR_STOP=1 -c "SELECT count(*) FROM sports.bookings"

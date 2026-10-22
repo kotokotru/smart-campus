@@ -1,0 +1,6 @@
+# Владельцы кода (Require review from Code Owners в Branch Protection).
+# В командном репозитории «Умного кампуса» вместо личного аккаунта указываются команды,
+# например @smart-campus/sports-team и @smart-campus/dba.
+*                              @kotokotru
+/homework-5/db/migrations/     @kotokotru
+/.github/workflows/            @kotokotru

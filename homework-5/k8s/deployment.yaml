@@ -1,0 +1,56 @@
+# campus-sports-api · Deployment для релиза v1.9.0 (CR-2026-110)
+# Rolling update без простоя: новый под принимает трафик только после readinessProbe,
+# старый под удаляется только после этого (maxUnavailable: 0).
+# История ревизий хранится для `kubectl rollout undo`.
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: campus-sports-api
+  namespace: campus-sports
+  labels:
+    app: campus-sports-api
+  annotations:
+    kubernetes.io/change-cause: "CR-2026-110 CAMPUS-110 v1.9.0 TimeSlot -> TimeRange (expand)"
+spec:
+  replicas: 3
+  revisionHistoryLimit: 10
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 0
+  selector:
+    matchLabels:
+      app: campus-sports-api
+  template:
+    metadata:
+      labels:
+        app: campus-sports-api
+        version: "1.9.0"
+    spec:
+      containers:
+        - name: api
+          image: registry.campus.example/campus-sports-api:1.9.0
+          ports:
+            - containerPort: 8080
+          env:
+            - name: ConnectionStrings__Campus
+              valueFrom:
+                secretKeyRef:
+                  name: campus-db
+                  key: connection-string
+            - name: Migration__WriteLegacyTimeSlot     # dual-write включён на всё время фазы Expand
+              value: "true"
+            - name: OTEL_EXPORTER_OTLP_ENDPOINT
+              value: "http://otel-collector.observability:4317"
+            - name: GIT_SHA
+              value: "v1.9.0"
+          readinessProbe:
+            httpGet:
+              path: /health/ready
+              port: 8080
+            initialDelaySeconds: 5
+            periodSeconds: 5
+          resources:
+            requests: { cpu: 100m, memory: 128Mi }
+            limits:   { cpu: 500m, memory: 256Mi }
