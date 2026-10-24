@@ -5,6 +5,7 @@
 | Папка | Работа |
 |---|---|
 | [`homework-5/`](homework-5/) | Безопасный релиз, миграция Expand and Contract и Docs-as-Code. Вариант 10 — «Спортивный комплекс», CAMPUS-110 (`TimeSlot` → `TimeRange`). Отчёт: [`homework-5/REPORT.md`](homework-5/REPORT.md) |
+| [`homework-6/`](homework-6/) | CALS на этапе эксплуатации: регламент обновления АРМ оператора (Canary / Blue-Green, резервное копирование, откат), утилита C# «Тестер Health Check после обновления», Docs-as-Code. Описание: [`homework-6/README.md`](homework-6/README.md) |
 
 ## Быстрый старт (homework-5)
 
