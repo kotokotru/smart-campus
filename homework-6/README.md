@@ -12,6 +12,7 @@
 - Утилита C# .NET 8: [`src/Campus.Arm.Updater/`](src/Campus.Arm.Updater/) (решение [`Campus.Arm.Updater.sln`](Campus.Arm.Updater.sln))
 - Sanity-тест: [`tests/Campus.Arm.Updater.Tests/SanityTests.cs`](tests/Campus.Arm.Updater.Tests/SanityTests.cs)
 - Примеры актов готовности АРМ: [`docs/examples/`](docs/examples/)
+- Отчёт (PDF): [`report/ПР6_03.01_Леонов_вариант10.pdf`](report/ПР6_03.01_Леонов_вариант10.pdf)
 
 ## Запуск
 

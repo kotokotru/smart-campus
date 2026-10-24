@@ -1,0 +1,18 @@
+digraph G {
+  rankdir=LR; dpi=200; bgcolor="white";
+  node [fontname="Liberation Serif", fontsize=13, shape=box, style="rounded,filled", fillcolor="#F2F2F2", color="#555555"];
+  edge [fontname="Liberation Serif", fontsize=11, color="#444444"];
+  CI [label="Сборка релиза\n(пакет zip + SHA-256)", fillcolor="#E3EEF9"];
+  SRV [label="Сервер обновлений\n\\\\campus-srv\\arm-updates\nmanifest.json + пакеты", shape=cylinder, fillcolor="#E3EEF9"];
+  subgraph cluster_c { label="Кольцо canary (опытная эксплуатация)"; fontname="Liberation Serif"; fontsize=12; style="dashed"; color="#C0504D";
+    C1 [label="АРМ КПП-01\nblue | green"]; C2 [label="АРМ КПП-02\nblue | green"]; }
+  GATE [label="3 рабочих дня,\nакты «ГОТОВ»?", shape=diamond, fillcolor="#FFF2CC"];
+  subgraph cluster_s { label="Кольцо stable (промышленная эксплуатация)"; fontname="Liberation Serif"; fontsize=12; style="dashed"; color="#4F81BD";
+    S1 [label="АРМ КПП-03…N"]; S2 [label="АРМ библиотеки"]; S3 [label="АРМ деканата"]; }
+  FIX [label="Релиз отозван\n(YANKED), исправление", fillcolor="#F8D7D7"];
+  CI -> SRV;
+  SRV -> C1 [label="rings: canary"]; SRV -> C2;
+  C1 -> GATE; C2 -> GATE;
+  GATE -> S1 [label="да: в манифест\nдобавлен stable"]; GATE -> S2; GATE -> S3;
+  GATE -> FIX [label="нет"];
+}
