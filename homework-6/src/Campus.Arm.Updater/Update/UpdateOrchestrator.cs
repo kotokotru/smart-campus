@@ -36,9 +36,7 @@ public sealed class UpdateOrchestrator
     /// <summary>Путь к последнему сформированному акту (для тестов и вывода в консоль).</summary>
     public string? LastActPath { get; private set; }
 
-    // ---------------------------------------------------------------------------------------
     // Команда update
-    // ---------------------------------------------------------------------------------------
     public async Task<int> UpdateAsync(string? targetVersion, CancellationToken ct = default)
     {
         var started = DateTime.Now;
@@ -49,7 +47,7 @@ public sealed class UpdateOrchestrator
 
         _log.Step($"[UPDATE] АРМ {_options.ArmId}, кольцо '{_options.Ring}', текущая версия {current.Version} (слот '{activeSlot}')");
 
-        // 1. Манифест сервера обновлений -------------------------------------------------------
+        // 1. Манифест сервера обновлений
         ReleaseInfo? release;
         try
         {
@@ -65,7 +63,7 @@ public sealed class UpdateOrchestrator
         _log.Step($"[UPDATE] Выбран релиз {release.Version} ({string.Join("/", release.Rings)}): {release.Notes}");
         notes.Add($"Релиз {release.Version} получен с сервера обновлений ({release.Notes})");
 
-        // 2. Загрузка пакета и контроль SHA-256 ----------------------------------------------------
+        // 2. Загрузка пакета и контроль SHA-256
         string package;
         try
         {
@@ -81,7 +79,7 @@ public sealed class UpdateOrchestrator
             return ExitCodes.Aborted;
         }
 
-        // 3. Снимок данных и резервная копия -------------------------------------------------------
+        // 3. Снимок данных и резервная копия
         Dictionary<string, long> rowsBefore;
         using (var db = LocalDb.Open(_layout.Database, readOnly: true))
             rowsBefore = LocalDb.CountRows(db, LocalDb.KeyTables);
@@ -100,7 +98,7 @@ public sealed class UpdateOrchestrator
         }
         notes.Add($"Резервная копия данных: {Paths.Rel(backup.Path)}");
 
-        // 4. Установка в неактивный слот + миграции ------------------------------------------------
+        // 4. Установка в неактивный слот + миграции
         var targetSlot = ArmLayout.OtherSlot(activeSlot);
         var installer = new BlueGreenInstaller(_layout, _log);
         AppVersionInfo installed;
@@ -122,12 +120,12 @@ public sealed class UpdateOrchestrator
             return ExitCodes.RolledBack;
         }
 
-        // 5. Переключение Blue-Green ---------------------------------------------------------------
+        // 5. Переключение Blue-Green
         _layout.SwitchActiveSlot(targetSlot);
         _log.Step($"[SWITCH] Активный слот: '{activeSlot}' → '{targetSlot}' (версия {installed.Version})");
         notes.Add($"Переключение слота {activeSlot} → {targetSlot}");
 
-        // 6. Health Check новой версии ------------------------------------------------------------
+        // 6. Health Check новой версии
         var results = await RunChecksAsync(rowsBefore, ct);
         var failed = results.Where(r => r.Critical && r.Status == HealthStatus.Fail).ToList();
 
@@ -146,7 +144,7 @@ public sealed class UpdateOrchestrator
             return ExitCodes.Ok;
         }
 
-        // 7. Автоматический откат ------------------------------------------------------------------
+        // 7. Автоматический откат
         _log.Error($"[ROLLBACK] Провалены критичные проверки: {string.Join(", ", failed.Select(f => f.Code))}. Запуск отката.");
         notes.Add($"Провалены проверки: {string.Join("; ", failed.Select(f => $"{f.Name} — {f.Details}"))}");
 
@@ -175,9 +173,7 @@ public sealed class UpdateOrchestrator
         return ExitCodes.RolledBack;
     }
 
-    // ---------------------------------------------------------------------------------------
     // Команда healthcheck
-    // ---------------------------------------------------------------------------------------
     public async Task<int> HealthCheckAsync(CancellationToken ct = default)
     {
         var started = DateTime.Now;
@@ -188,9 +184,7 @@ public sealed class UpdateOrchestrator
         return report.Ready ? ExitCodes.Ok : ExitCodes.NotReady;
     }
 
-    // ---------------------------------------------------------------------------------------
     // Команда rollback (ручной откат администратором)
-    // ---------------------------------------------------------------------------------------
     public async Task<int> RollbackAsync(CancellationToken ct = default)
     {
         var started = DateTime.Now;
@@ -238,9 +232,7 @@ public sealed class UpdateOrchestrator
         return report.Ready ? ExitCodes.Ok : ExitCodes.NotReady;
     }
 
-    // ---------------------------------------------------------------------------------------
     // Команды status / check
-    // ---------------------------------------------------------------------------------------
     public int Status()
     {
         var slot = _layout.ReadActiveSlot();
@@ -274,9 +266,7 @@ public sealed class UpdateOrchestrator
         return ExitCodes.Ok;
     }
 
-    // ---------------------------------------------------------------------------------------
     // Вспомогательные методы
-    // ---------------------------------------------------------------------------------------
     private ReleaseManifest LoadManifest()
     {
         var file = Path.Combine(_options.UpdateSource, "manifest.json");
