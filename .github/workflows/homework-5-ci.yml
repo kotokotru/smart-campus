@@ -3,8 +3,10 @@ name: homework-5 CI (campus-sports-api)
 on:
   push:
     branches: [main]
+    paths: ["homework-5/**", ".github/workflows/homework-5-ci.yml"]
   pull_request:
     branches: [main]
+    paths: ["homework-5/**"]
 
 permissions:
   contents: read
