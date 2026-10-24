@@ -1,0 +1,28 @@
+name: homework-6 CI (Campus.Arm.Updater)
+
+on:
+  push:
+    branches: [main]
+    paths: ["homework-6/**", ".github/workflows/homework-6-ci.yml"]
+  pull_request:
+    branches: [main]
+    paths: ["homework-6/**"]
+
+permissions:
+  contents: read
+
+jobs:
+  build-and-test:
+    name: build-and-test
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: homework-6
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 8.0.x
+      - run: dotnet build Campus.Arm.Updater.sln -c Release
+      - name: Sanity tests (update, rollback, corrupted package, API timeout)
+        run: dotnet test Campus.Arm.Updater.sln -c Release --no-build --logger "console;verbosity=normal"
