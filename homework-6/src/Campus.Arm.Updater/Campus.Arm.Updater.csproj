@@ -1,0 +1,26 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net8.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <RootNamespace>Campus.Arm.Updater</RootNamespace>
+    <AssemblyName>Campus.Arm.Updater</AssemblyName>
+    <Version>1.0.0</Version>
+    <!-- Утилита собрана под .NET 8, но запустится и на АРМ, где установлен только более новый runtime -->
+    <RollForward>LatestMajor</RollForward>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <!-- Локальная БД АРМ -->
+    <PackageReference Include="Microsoft.Data.Sqlite" Version="8.0.10" />
+    <!-- Считыватель карт на COM-порту -->
+    <PackageReference Include="System.IO.Ports" Version="8.0.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <InternalsVisibleTo Include="Campus.Arm.Updater.Tests" />
+  </ItemGroup>
+
+</Project>
