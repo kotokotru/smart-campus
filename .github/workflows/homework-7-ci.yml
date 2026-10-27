@@ -1,0 +1,31 @@
+name: homework-7 CI (Campus.MealLedger)
+
+on:
+  push:
+    branches: [main]
+    paths: ["homework-7/**", ".github/workflows/homework-7-ci.yml"]
+  pull_request:
+    branches: [main]
+    paths: ["homework-7/**"]
+
+permissions:
+  contents: read
+
+jobs:
+  build-and-run:
+    name: build-and-run
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: homework-7
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 8.0.x
+      - run: dotnet build Campus.MealLedger.sln -c Release
+      - name: Generate meal ledger (jsonplaceholder /posts)
+        run: dotnet run --project src/Campus.MealLedger -c Release --no-build -- --date 2026-10-27 --out ci-output
+      - name: Verify SHA-256 checksums
+        working-directory: homework-7/ci-output
+        run: sha256sum -c meal_ledger_2026-10-27.sha256
