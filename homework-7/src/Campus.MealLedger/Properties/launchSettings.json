@@ -1,0 +1,9 @@
+{
+  "profiles": {
+    "Campus.MealLedger": {
+      "commandName": "Project",
+      "commandLineArgs": "--date 2026-10-27 --out output",
+      "workingDirectory": "$(ProjectDir)..\\.."
+    }
+  }
+}
